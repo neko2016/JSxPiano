@@ -45,6 +45,44 @@ var KeyToMidi = {
 
 function setup() {
     createCanvas(1280, 400);
+    fill(255);              // white keys
+    rect (10, 10, 30, 100); // 1st octave
+    rect (40, 10, 30, 100);
+    rect (70, 10, 30, 100);
+    rect (100, 10, 30, 100);
+    rect (130, 10, 30, 100);
+    rect (160, 10, 30, 100);
+    rect (190, 10, 30, 100);
+    rect (220, 10, 30, 100); // 2nd octave 
+    rect (250, 10, 30, 100);
+    rect (280, 10, 30, 100);
+    rect (310, 10, 30, 100);
+    rect (340, 10, 30, 100);
+    rect (370, 10, 30, 100);
+    rect (400, 10, 30, 100);
+    rect (430, 10, 30, 100); // 3rd octave
+    rect (460, 10, 30, 100);
+    rect (490, 10, 30, 100);
+    rect (520, 10, 30, 100);
+    rect (550, 10, 30, 100);
+    rect (580, 10, 30, 100);
+    rect (610, 10, 30, 100);
+    fill(0);                  // black keys
+    rect (32,10,15,60);       // 1st octave
+    rect (62,10,15,60);
+    rect (122,10,15,60);
+    rect (152,10,15,60);
+    rect (182,10,15,60);
+    rect (242,10,15,60);      // 2nd octave
+    rect (272,10,15,60);
+    rect (332,10,15,60);
+    rect (362,10,15,60);
+    rect (392,10,15,60);
+    rect (452,10,15,60);     // 3rd octave
+    rect (482,10,15,60); 
+    rect (542,10,15,60); 
+    rect (572,10,15,60); 
+    rect (602,10,15,60); 
 }
 
 var osc = {};
@@ -98,40 +136,18 @@ function fadeOutNote(note, duration) {
 }
 
 function draw() {
-  fill(255);
-  rect (10, 10, 30, 100);
-  rect (40, 10, 30, 100);
-  rect (70, 10, 30, 100);
-  rect (100, 10, 30, 100);
-  rect (130, 10, 30, 100);
-  rect (160, 10, 30, 100);
-  rect (190, 10, 30, 100);
-  rect (220, 10, 30, 100);
-  rect (250, 10, 30, 100);
-  rect (280, 10, 30, 100);
-  rect (310, 10, 30, 100);
-  rect (340, 10, 30, 100);
-  rect (370, 10, 30, 100);
-  rect (400, 10, 30, 100);
-  fill(0);
-  rect (32,10,15,60);
-  rect (62,10,15,60);
-  rect (122,10,15,60);
-  rect (152,10,15,60);
-  rect (182,10,15,60);
-  rect (242,10,15,60);
-  rect (272,10,15,60);
-  rect (332,10,15,60);
-  rect (362,10,15,60);
-  rect (392,10,15,60);
-
 }
 
 function keyPressed() {
 	console.log('keycode: ' + keyCode);
     playNote(KeyToMidi[keyCode], 100);
+    var mod = KeyToMidi[keyCode];
 }
 
+
+function drawPlaying () {
+	
+}
 
 // Fade it out when we release
 //function mouseReleased() {
