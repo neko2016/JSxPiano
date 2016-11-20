@@ -11,22 +11,39 @@ var KeyToMidi = {
 
 function setup() {
     createCanvas(1280, 400);
-    osc = new p5.TriOsc(); 
-    osc.start();
-    osc.amp(0);
 }
 
+var osc = {};
+
 function playNote(note, duration) {
-  osc.freq(midiToFreq(note));
-  // Fade it in
-  osc.fade(0.5,0.2);
+	if (!osc[note]) {
+	    createAndFadeInNote(note);
+	} else {
+		fadeOutNote(osc[note], duration);
+		osc[note] = null;
+		createAndFadeInNote(note);
+	}
+
 
   // If we sest a duration, fade it out
   if (duration) {
-    setTimeout(function() {
-      osc.fade(0,0.2);
-    }, duration-50);
+    fadeOutNote(osc[note]);
+	  osc[note] = null;
   }
+}
+
+function createAndFadeInNote(note) {
+	osc[note] = new p5.TriOsc();
+	osc[note].start();
+	osc[note].amp(0);
+	osc[note].freq(midiToFreq(note));
+	osc[note].fade(0.5, 0.2);
+}
+
+function fadeOutNote(whichNote, duration) {
+	setTimeout(function() {
+		whichNote.fade(0, 0.2);
+	}, duration-50);
 }
 
 function draw() {
@@ -65,6 +82,6 @@ function keyPressed() {
 
 
 // Fade it out when we release
-function mouseReleased() {
-  osc.fade(0,0.5);
-}
+//function mouseReleased() {
+//  osc.fade(0,0.5);
+//}
