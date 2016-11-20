@@ -39,7 +39,7 @@ var KeyToMidi = {
 	'219': 77, // F
 	'187': 78, //
 	'221': 79, // G
-	'8': 80, // del
+	'8': 81, // del
 
 }
 
@@ -51,18 +51,23 @@ var osc = {};
 
 function playNote(note, duration) {
 	if (!osc[note]) {
-	    createAndFadeInNote(note);
+		console.log('no osc for note:' + note);
+		if (midiToFreq(note)){
+			createAndFadeInNote(note);
+		} else {
+			console.log('cannot find note');
+		}
 	} else {
-		fadeOutNote(osc[note], duration);
-		osc[note] = null;
-		createAndFadeInNote(note);
+//		if (duration){
+//   		    fadeOutNote(note, duration);
+//		}
+		//createAndFadeInNote(note);
 	}
 
 
   // If we sest a duration, fade it out
   if (duration) {
-    fadeOutNote(osc[note]);
-	  osc[note] = null;
+    fadeOutNote(note, duration);
   }
 }
 
@@ -74,10 +79,22 @@ function createAndFadeInNote(note) {
 	osc[note].fade(0.5, 0.2);
 }
 
-function fadeOutNote(whichNote, duration) {
+function fadeOutNote(note, duration) {
+//	setTimeout(function() {
+	
+		
+	    //osc[note].stop();
+	    //osc[note] = null;
+//	}, duration-50);
 	setTimeout(function() {
-		whichNote.fade(0, 0.2);
-	}, duration-50);
+		//osc[note].fade(0, 0.2);
+		osc[note].fade(0, 0.2);
+	}, duration-100);
+	
+	setTimeout(function() {
+			osc[note].stop();
+			osc[note] = null;
+		}, duration+50); 
 }
 
 function draw() {
@@ -111,7 +128,8 @@ function draw() {
 }
 
 function keyPressed() {
-    playNote(KeyToMidi[keyCode], 200);
+	console.log('keycode: ' + keyCode);
+    playNote(KeyToMidi[keyCode], 100);
 }
 
 
