@@ -1,0 +1,181 @@
+var osc = {};
+var octaveID;
+var noteID;
+
+var KeyToMidi = {
+    '81': 48, // C3, q
+    '50': 49, // C3#, 2
+    '87': 50, // D3, w
+    '51': 51, // D3#, 3
+    '69': 52, // E3, e
+    '82': 53, // F3, r
+    '53': 54, // F3#, 5
+    '84': 55, // G3, t
+    '54': 56, // G3#, 6
+    '89': 57, // A3, y
+    '55': 58, // A3#, 7
+    '85': 59, // B3, u
+    '73': 60, // C4, i
+    '57': 61, 
+    '79': 62, 
+    '48': 63,
+    '80': 64,
+    '219': 65,
+    '187': 66,
+    '221': 67,
+    '65': 68,
+    '90': 69,
+    '83': 70,
+    '88': 71, 
+    '67': 72, // C5, c
+    '70': 73, 
+    '86': 74,
+    '71': 75,
+    '66': 76,
+    '78': 77,
+    '74': 78,
+    '77': 79,
+    '75': 80,
+    '188': 81,
+    '76': 82,
+    '190': 83
+}
+
+var numOctave = 3;
+var baseWidth = 50; 
+var baseHeight = baseWidth * 4;  
+var start_x_white = (window.innerWidth - baseWidth * 7 * numOctave) / 2 ;
+var start_x_black = start_x_white + baseWidth * 0.75 ; 
+var startY = (window.innerHeight - baseHeight) / 8 ; 
+
+function setup(){
+    createCanvas(window.innerWidth, window.innerHeight);
+    background('#282B6E');
+    drawKeyboard();
+    noLoop();
+}
+
+function draw(){
+    console.log('drawing');
+    drawPressedKeys();
+}
+
+
+function keyPressed(){
+    var midi = KeyToMidi[keyCode];
+    var octave = floor(midi / 12) - 1;
+    octaveID = octave - numOctave;
+
+    var musicNote = midi % 12;
+
+    if(musicNote >= 5){
+        noteID = musicNote + 1;
+    } else {
+        noteID = musicNote;
+    }
+
+    // console.log('keycode: ' + keyCode + ' midi: ' + midi);
+    // console.log('midi', midi, 'octave', octave, 'octaveID:', octaveID, 'musicNote:', musicNote, 'noteID:', noteID);
+    // drawPressedKeys();
+    loop();
+    playNote(KeyToMidi[keyCode], 100);
+    return false;
+}
+
+function keyReleased(){
+    setTimeout(drawKeyboard, 100);
+    noLoop();
+    return false;
+}
+
+function drawKeyboard(){
+    for (var octave = 0; octave < numOctave; octave++){
+        // white keys
+        for (n = 0; n < 14; n++){
+            if (n % 2 === 0){
+                i = n / 2;
+                fill(255);
+                rect(start_x_white + baseWidth * i + (baseWidth * 7 * octave), startY, baseWidth, baseHeight, 0, 0, 5, 5);
+            }
+        }
+        // black keys
+        for (n = 0; n < 14; n++){
+            if (n % 2 === 1 && (n%14 !== 5) && (n%14 !== 13) ){
+                j = (n-1) / 2;
+                fill(0);
+                rect(start_x_black + baseWidth * j + (baseWidth * 7 * octave), startY, baseWidth*0.5, baseHeight*0.6, 0, 0, 5, 5); 
+            }
+        }
+    }
+}
+
+function drawPressedKeys(){
+    if (keyIsPressed && octaveID !== NaN && noteID !== NaN){ 
+        // white keys
+        if (noteID % 2 === 0){
+            // fill("#e1ffe0");
+            fill("gold");
+            rect(start_x_white + baseWidth * noteID/2 + (baseWidth * 7 * octaveID), startY, baseWidth, baseHeight, 0, 0, 5, 5);
+
+            // backfill the neighboring black keys
+            if(noteID === 2 || noteID === 8 || noteID === 10){
+                fill(0);
+                var m = noteID - 1;
+                var n = noteID + 1;
+                rect(start_x_black + baseWidth * (m-1)/2 + (baseWidth * 7 * octaveID), startY, baseWidth*0.5, baseHeight*0.6, 0, 0, 5, 5); 
+                rect(start_x_black + baseWidth * (n-1)/2 + (baseWidth * 7 * octaveID), startY, baseWidth*0.5, baseHeight*0.6, 0, 0, 5, 5); 
+            } else if( noteID === 0 || noteID === 6){
+                fill(0);
+                var m = noteID + 1;
+                rect(start_x_black + baseWidth * (m-1)/2 + (baseWidth * 7 * octaveID), startY, baseWidth*0.5, baseHeight*0.6, 0, 0, 5, 5); 
+            } else if( noteID === 4 || noteID === 12){
+                fill(0);
+                var m = noteID - 1;
+                rect(start_x_black + baseWidth * (m-1)/2 + (baseWidth * 7 * octaveID), startY, baseWidth*0.5, baseHeight*0.6, 0, 0, 5, 5); 
+            }
+        }
+        // black keys
+        if (noteID % 2 === 1 && noteID !== 5){ 
+            // fill("#e1ffe0");
+            fill("gold");
+            rect(start_x_black + baseWidth * (noteID-1)/2 + (baseWidth * 7 * octaveID), startY, baseWidth*0.5, baseHeight*0.6, 0, 0, 5, 5); 
+        }
+    }
+}
+
+function playNote(note, duration) {
+    if (!osc[note]) {
+        console.log('no osc for note:' + note);
+        if (midiToFreq(note)){
+            createAndFadeInNote(note);
+        } else {
+            console.log('cannot find note');
+        }
+    } 
+  // If we sest a duration, fade it out
+  if (duration) {
+    fadeOutNote(note, duration);
+  }
+}
+
+function createAndFadeInNote(note) {
+    osc[note] = new p5.TriOsc();
+    osc[note].start();
+    osc[note].amp(0);
+    osc[note].freq(midiToFreq(note));
+    osc[note].fade(0.5, 0.2);
+}
+
+function fadeOutNote(note, duration) {
+    setTimeout(function() {
+        osc[note].fade(0, 0.2);
+    }, duration-100);
+    
+    setTimeout(function() {
+        osc[note].stop();
+        osc[note] = null;
+    }, duration+50); 
+}
+
+
+
