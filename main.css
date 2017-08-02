@@ -1,0 +1,20 @@
+body{
+    padding:0; 
+    margin:0;
+} 
+
+#wrapper{
+    position: relative;
+}
+
+#container canvas, #overlay {
+    position: absolute;
+}
+
+#overlay{
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif;
+    margin: 30px auto;
+    width: 100%;
+    text-align: center;
+}

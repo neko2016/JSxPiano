@@ -51,10 +51,11 @@ var baseWidth = 50;
 var baseHeight = baseWidth * 4;  
 var start_x_white = (window.innerWidth - baseWidth * 7 * numOctave) / 2 ;
 var start_x_black = start_x_white + baseWidth * 0.75 ; 
-var startY = (window.innerHeight - baseHeight) / 8 ; 
+var startY = (window.innerHeight - baseHeight) / 3 ; 
 
 function setup(){
-    createCanvas(window.innerWidth, window.innerHeight);
+    var canvas = createCanvas(window.innerWidth, window.innerHeight);
+    canvas.parent('wrapper');
     background('#282B6E');
     drawKeyboard();
     noLoop();
