@@ -97,7 +97,7 @@ function keyReleased(){
 function drawKeyboard(){
     for (var octave = 0; octave < numOctave; octave++){
         // white keys
-        for (n = 0; n < 14; n++){
+        for (var n = 0; n < 14; n++){
             if (n % 2 === 0){
                 i = n / 2;
                 fill(255);
@@ -109,7 +109,7 @@ function drawKeyboard(){
             }
         }
         // black keys
-        for (n = 0; n < 14; n++){
+        for (var n = 0; n < 14; n++){
             if (n % 2 === 1 && (n%14 !== 5) && (n%14 !== 13) ){
                 j = (n-1) / 2;
                 fill(0);
@@ -190,7 +190,7 @@ function playNote(note, duration) {
             console.log('cannot find note');
         }
     } 
-  // If we sest a duration, fade it out
+  // If we set a duration, fade it out
   if (duration) {
     fadeOutNote(note, duration);
   }
